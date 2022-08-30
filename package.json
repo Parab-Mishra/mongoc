@@ -1,0 +1,22 @@
+{
+  "name": "mongoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parab-Mishra/mongoc.git"
+  },
+  "author": "V0idHat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Parab-Mishra/mongoc/issues"
+  },
+  "homepage": "https://github.com/Parab-Mishra/mongoc#readme",
+  "dependencies": {
+    "mongodb": "^4.9.0"
+  }
+}
