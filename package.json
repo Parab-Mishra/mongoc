@@ -12,6 +12,7 @@
   },
   "author": "V0idHat",
   "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Parab-Mishra/mongoc/issues"
   },
