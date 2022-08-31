@@ -18,6 +18,7 @@ export const connect = async (options, onSuccess, onFailure) => {
   }
 }
 
+//Fetch documents
 export const findAll = async (db, coll, query = {}) => {
   const dbc = await connection.db(db);
   return new Promise((resolve, reject) => {
@@ -26,4 +27,47 @@ export const findAll = async (db, coll, query = {}) => {
       resolve(d);
     });
   });
+}
+
+export const findOne = async (db, coll, query = {}) => {
+  const dbc = await connection.db(db);
+  return new Promise((resolve, reject) => {
+    db.collection(coll).findOne(query).toArray((e, d) => {
+      if(e) reject(e);
+      resolve(d);
+    });
+  });
+}
+
+//Update Documents
+export const updateOne = async (db, coll, query = {}, update) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).updateOne(query, update);
+}
+
+export const updateMany = async (db, coll, query = {}, update) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).updateMany(query, update);
+}
+
+//Insert Documents
+export const insertOne = async (db, coll, doc) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).insertOne(doc);
+}
+
+export const insertMany = async (db, coll, docArr) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).insertMany(docArr);
+}
+
+//Delete Documents
+export const deleteOne = async (db, coll, query) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).deleteOne(query);
+}
+
+export const deleteMany = async (db, coll, query) => {
+  const dbc = await connection.db(db);
+  return dbc.collection(coll).deleteMany(query);
 }
