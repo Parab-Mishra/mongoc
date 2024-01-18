@@ -18,56 +18,245 @@ export const connect = async (options, onSuccess, onFailure) => {
   }
 }
 
-//Fetch documents
-export const findAll = async (db, coll, query = {}) => {
+//ToDo: All validations in all functions for query, values and options
+export const FindAllDocuments = async (db, coll) => {
   const dbc = await connection.db(db);
+
   return new Promise((resolve, reject) => {
-    dbc.collection(coll).find(query).toArray((e, d) => {
-      if(e) reject(e);
-      resolve(d);
-    });
+    dbc
+      .collection(coll)
+      .find({})
+      .toArray()
+      .then((d) => {
+        logger.debug("FindAllDocuments: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("FindAllDocuments: ", e);
+        reject(e);
+      });
   });
-}
+};
 
-export const findOne = async (db, coll, query = {}) => {
+export const FindDocsWithQuery = async (db, coll, query = {}, projection = {}, options = {}) => {
   const dbc = await connection.db(db);
+
   return new Promise((resolve, reject) => {
-    db.collection(coll).findOne(query).toArray((e, d) => {
-      if(e) reject(e);
-      resolve(d);
-    });
+    dbc
+      .collection(coll)
+      .find(query, projection, options)
+      .toArray()
+      .then((d) => {
+        logger.debug("FindDocsWithQuery: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("FindDocsWithQuery: ", e);
+        reject(e);
+      });
   });
-}
+};
 
-//Update Documents
-export const updateOne = async (db, coll, query = {}, update) => {
+export const FindOneDocument = async (db, coll, query = {}, projection = {}, options = {}) => {
   const dbc = await connection.db(db);
-  return dbc.collection(coll).updateOne(query, update);
-}
 
-export const updateMany = async (db, coll, query = {}, update) => {
-  const dbc = await connection.db(db);
-  return dbc.collection(coll).updateMany(query, update);
-}
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .findOne(query, projection, options)
+      .then((d) => {
+        logger.debug("FindOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("FindOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
 
-//Insert Documents
-export const insertOne = async (db, coll, doc) => {
+export const InsertOneDocument = async (db, coll, doc, options = {}) => {
   const dbc = await connection.db(db);
-  return dbc.collection(coll).insertOne(doc);
-}
 
-export const insertMany = async (db, coll, docArr) => {
-  const dbc = await connection.db(db);
-  return dbc.collection(coll).insertMany(docArr);
-}
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .insertOne(doc, options)
+      .then((d) => {
+        logger.debug("InsertOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("InsertOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
 
-//Delete Documents
-export const deleteOne = async (db, coll, query) => {
+export const InsertDocumentArray = async (db, coll, docArr, options = {}) => {
   const dbc = await connection.db(db);
-  return dbc.collection(coll).deleteOne(query);
-}
 
-export const deleteMany = async (db, coll, query) => {
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .insertMany(docArr, options)
+      .then((d) => {
+        logger.debug("InsertDocumentArray: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("InsertDocumentArray: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const UpdateOneDocument = async (db, coll, query, values, options = {}) => {
   const dbc = await connection.db(db);
-  return dbc.collection(coll).deleteMany(query);
-}
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateOne(query, { $set: values }, options)
+      .then((d) => {
+        logger.debug("UpdateOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("UpdateOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const UpdateManyDocuments = async (db, coll, query, values, options = {}) => {
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateMany(query, { $set: values }, options)
+      .then((d) => {
+        logger.debug("UpdateManyDocuments: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("UpdateManyDocuments: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const ModifyOneDocument = async (db, coll, query, values, options = {}) => {
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateOne(query, values, options)
+      .then((d) => {
+        logger.debug("ModifyOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("ModifyOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const ModifyManyDocuments = async (db, coll, query, values, options = {}) => {
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateMany(query, values, options)
+      .then((d) => {
+        logger.debug("ModifyManyDocuments: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("ModifyManyDocuments: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const DeleteOneDocument = async (db, coll, query, values = {}) => {
+  values.deleted = true;
+  values.deletedAt = Date.now();
+
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateOne(query, { $set: values })
+      .then((d) => {
+        logger.debug("DeleteOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("DeleteOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const DeleteManyDocuments = async (db, coll, query, values = {}) => {
+  values.deleted = true;
+  values.deletedAt = Date.now();
+
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .updateMany(query, { $set: values })
+      .then((d) => {
+        logger.debug("DeleteManyDocuments: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("DeleteManyDocuments: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const PermanentlyDeleteOneDocument = async (db, coll, query) => {
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .deleteOne(query)
+      .then((d) => {
+        logger.debug("DeleteOneDocument: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("DeleteOneDocument: ", e);
+        reject(e);
+      });
+  });
+};
+
+export const PermanentlyDeleteManyDocuments = async (db, coll, query) => {
+  const dbc = await connection.db(db);
+
+  return new Promise((resolve, reject) => {
+    dbc
+      .collection(coll)
+      .deleteMany(query)
+      .then((d) => {
+        logger.debug("DeleteManyDocuments: Successfull");
+        resolve(d);
+      })
+      .catch((e) => {
+        console.error("DeleteManyDocuments: ", e);
+        reject(e);
+      });
+  });
+};
